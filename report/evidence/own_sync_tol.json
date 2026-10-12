@@ -1,0 +1,11 @@
+{
+  "experiment": "own_sync_tol_ms",
+  "student_id": "2A202602757",
+  "how": "scripts/lab.sh dbt run --select silver_frame_telemetry+ --vars '{sync_tol_ms: N}'; default in dbt_project.yml is 150, restored afterwards",
+  "results": [
+    {"sync_tol_ms": 50,  "frames_out_of_sync": 600, "gold_frames": 538,  "by_split": {"train": 377, "val": 89,  "test": 72}},
+    {"sync_tol_ms": 100, "frames_out_of_sync": 324, "gold_frames": 762,  "by_split": {"train": 532, "val": 126, "test": 104}},
+    {"sync_tol_ms": 150, "frames_out_of_sync": 14,  "gold_frames": 1019, "by_split": {"train": 717, "val": 162, "test": 140}},
+    {"sync_tol_ms": 300, "frames_out_of_sync": 14,  "gold_frames": 1019, "by_split": {"train": 717, "val": 162, "test": 140}}
+  ]
+}
