@@ -85,11 +85,11 @@ MSSV được trộn vào thứ tự xếp trip: `row_number() over (partition b
 
 ```
 bronze.raw_telemetry_a: 0, bronze.raw_telemetry_b: 0, bronze.trips_raw: 0, bronze.video_files: 1,
-silver.frames: 27, silver.telemetry: 0, silver.frames_flagged: 0, silver.frame_telemetry: 0,
+silver.frames: 25, silver.telemetry: 0, silver.frames_flagged: 0, silver.frame_telemetry: 0,
 input_video_sha256: drive_a 636ba1a98dfc5ba6…e7e9aa, drive_b bfa62703f645ff77…bee9fdc
 ```
 
-Trả lời "dataset này được tạo từ dữ liệu nào?": từ hai video có sha256 trên, telemetry bronze A/B version 0, và bảng `silver.frames` ở **version 27** (26 commit ghi từng trip + 2 commit do tôi chạy lại trip-00003 trong thí nghiệm idempotent), qua luật `rules.drop = [is_black, is_blurry, is_near_dup, not sync_ok]` và `split = per trip, stratified by drive, md5 order`. Ba tháng sau, để tái tạo đúng: sha256 của video đầu vào (chứng minh đúng file gốc), version của từng bảng Delta (time travel về đúng trạng thái), luật lọc/chia trong manifest + tham số `dbt_project.yml` (commit git của mã), và MSSV dùng để chia; tái tạo xong thì băm lại phải ra `bd9952ba7d92`, kèm `manifest_sha256 = 20bd55cc…68fa5a2` để kiểm tra manifest không bị sửa.
+Trả lời "dataset này được tạo từ dữ liệu nào?": từ hai video có sha256 trên, telemetry bronze A/B version 0, và bảng `silver.frames` ở **version 25** (lần chạy cuối `step all --reset` từ lake trống: 26 commit ghi từng trip, version 0..25; trong lúc làm bài, sau thí nghiệm idempotent, manifest từng ghi version 27 vì 2 lần chạy lại trip-00003 thêm 2 commit — nội dung y hệt nên `dataset_version` không đổi), qua luật `rules.drop = [is_black, is_blurry, is_near_dup, not sync_ok]` và `split = per trip, stratified by drive, md5 order`. Ba tháng sau, để tái tạo đúng: sha256 của video đầu vào (chứng minh đúng file gốc), version của từng bảng Delta (time travel về đúng trạng thái), luật lọc/chia trong manifest + tham số `dbt_project.yml` (commit git của mã), và MSSV dùng để chia; tái tạo xong thì băm lại phải ra `bd9952ba7d92`, kèm `manifest_sha256 = 20bd55cc…68fa5a2` để kiểm tra manifest không bị sửa.
 
 ## Bước 5 · Điều phối và phục vụ
 
